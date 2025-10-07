@@ -50,6 +50,92 @@
 
 ``````
 
+```
+from collections import defaultdict
+
+def astarAlgo(start, stop):
+    open_set = set([start])
+    closed = set()
+    parents = {}
+    g = {}
+    g[start] = 0
+    parents[start] = start
+
+    while len(open_set) > 0:
+        n = None
+        for v in open_set:
+            if n is None or g[v] + heuristic(v) < g[n] + heuristic(n):
+                n = v
+
+        if n is None:
+            return None
+
+        if n == stop:
+            path = []
+            while parents[n] != n:
+                path.append(n)
+                n = parents[n]
+            path.append(start)
+            path.reverse()
+            print("Path Found: {}".format(path))
+            return path
+
+        for (m, weight) in get_neighbours(n):
+            if m not in open_set and m not in closed:
+                open_set.add(m)
+                parents[m] = n
+                g[m] = g[n] + weight
+            else:
+                if g[m] > g[n] + weight:
+                    g[m] = g[n] + weight
+                    parents[m] = n
+                    if m in closed:
+                        closed.remove(m)
+                        open_set.add(m)
+
+        open_set.remove(n)
+        closed.add(n)
+
+    return None
+
+
+def get_neighbours(v):
+    if v in Graph_nodes:
+        return Graph_nodes[v]
+    else:
+        return []
+
+
+def heuristic(n):
+    return H_dist[n]
+
+
+H_dist = {}
+graph = defaultdict(list)
+
+n, e = map(int, input().split()) 
+
+for i in range(e):
+    u, v, w = input().split()
+    w = int(w)
+    graph[u].append((v, w))
+    graph[v].append((u, w))
+
+Graph_nodes = graph
+print(graph)
+
+for i in range(n):
+    node, h = input().split()
+    H_dist[node] = int(h)
+
+print(H_dist)
+
+start = input().strip()
+goal = input().strip()
+
+astarAlgo(start, goal)
+```
+
 <hr>
 <h2>Sample Graph I</h2>
 <hr>
